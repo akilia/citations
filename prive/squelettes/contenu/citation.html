@@ -1,0 +1,48 @@
+[(#AUTORISER{voir,citation,#ID_CITATION}|sinon_interdire_acces)]
+[(#SET{url_voir,#VAL{citation}|objet_info{url_voir}})]
+[(#SET{url_edit,#VAL{citation}|objet_info{url_edit}})]
+<BOUCLE_citation(CITATIONS){id_citation}{statut==.*}{si #ENV{exec}|=={#GET{url_voir}}}>
+[(#BOITE_OUVRIR{[
+	
+	<h1>[(#RANG). ](#AUTEUR|sinon{<:info_sans_titre:>})[(#CHEMIN_IMAGE{citation-24.png}|balise_img{citation,cadre-icone})]</h1>
+
+],simple fiche_objet})]
+
+<div class="ajax">
+	#FORMULAIRE_DATER{citation,#ID_CITATION}
+</div>
+
+<!--affiche_milieu-->
+
+<div id="wysiwyg">
+<INCLURE{fond=prive/objets/contenu/citation,id=#ID_CITATION,id_citation=#ID_CITATION,virtuel=oui,ajax=wysiwyg,wysiwyg=1}>
+</div>
+
+<div class="nettoyeur"></div>
+
+[(#AUTORISER{modifier,citation,#ID_CITATION})
+	[(#ID_CITATION|afficher_qui_edite{citation}|non)
+		[(#URL_ECRIRE{#GET{url_edit},id_citation=#ID_CITATION}|icone_verticale{<:citation:icone_modifier_citation:>,citation,edit,right ajax preload})]
+	]
+	[(#ID_CITATION|afficher_qui_edite{citation}|oui)
+		[(#URL_ECRIRE{#GET{url_edit},id_citation=#ID_CITATION}|icone_verticale{#ID_CITATION|afficher_qui_edite{citation},warning-24,'',right edition_deja ajax preload})]
+	]
+]
+
+#PIPELINE{afficher_complement_objet,#ARRAY{args,#ARRAY{type,citation,id,#ID_CITATION},data,'<div class="nettoyeur"></div>'}}
+
+#BOITE_FERMER
+
+
+#SET{enfants,''}
+[(#VAL{prive/objets/contenu/citation-enfants}|trouver_fond|oui)
+	[(#SET{enfants,[(#INCLURE{fond=prive/objets/contenu/citation-enfants,id_citation,env})]})]
+]
+[(#PIPELINE{affiche_enfants,[(#ARRAY{args,#ARRAY{exec,citation,id_citation,#ID_CITATION,objet,citation,id_objet,#ID_CITATION},data,#GET{enfants}})]})]
+
+[(#EVAL{_AJAX}|oui)
+	<script type="text/javascript">/*<!\\[CDATA\\[*/reloadExecPage('#ENV{exec}','#navigation,#chemin,#extra');/*\\]\\]>*/</script>
+]
+</BOUCLE_citation>
+[(#ENV**{exec}|=={#GET{url_edit}}|?{#INCLURE{fond=prive/squelettes/contenu/#GET{url_edit},redirect='',env,retourajax=oui},#REM|sinon_interdire_acces})]
+<//B_citation>

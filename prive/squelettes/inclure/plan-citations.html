@@ -1,0 +1,40 @@
+<BOUCLE_nb_items(CITATIONS)
+	{id_rubrique}
+	{statut == .*}{statut ?}
+	{pagination 1}>
+	#SET{total,#GRAND_TOTAL}
+	#SET{lister,#PLAN_AFFICHER_LISTE}
+</BOUCLE_nb_items>
+
+[(#ENV{conteneur}|=={non}|non)
+	<ul class="menu-items citations">
+		<li id="citations-rubrique-#ID_RUBRIQUE"
+			class="item group[ (#GET{lister}|non)jstree-closed]"
+			data-jstree='{"type":"box_citation"}' data-objet="citation">
+			<strong>[(#GET{total}|objet_afficher_nb{citation})]</strong>
+]
+
+			<B_items>
+				<ul class="menu-items citations">
+			<BOUCLE_items(CITATIONS)
+				{id_rubrique}
+				{par auteur}
+				{statut == .*}{statut ?}
+				{si #GET{lister}}
+				>
+				<li id="citation-#ID_CITATION" class="item" data-jstree='{"type":"citation"}' data-objet="citation">
+					<a href="[(#ID_CITATION|generer_url_entite{citation})]"
+						[hreflang="(#ENV{lang}|=={#LANG}|non|?{#LANG})"]
+						title="[(#VAL{citation}|objet_info{texte_objet}|_T) #ID_CITATION]">
+						 [(#STATUT|puce_statut{citation}) ][(#AUTEUR|couper{80}|sinon{<:info_sans_titre:>})]
+					</a>
+				</li>
+			</BOUCLE_items>
+			</ul>
+			</B_items>
+
+[(#ENV{conteneur}|=={non}|non)
+		</li>
+	</ul>
+]
+</B_nb_items>

@@ -1,0 +1,51 @@
+[(#REM)	Compatibilité avec le plugin Zcore
+		Voir aussi : https://contrib.spip.net/Zcore
+]
+	<BOUCLE_principale_zcore(CITATIONS){id_citation}{si #PLUGIN{zcore}}>
+	<INCLURE{fond=structure,env,id_rubrique=#ENV{id_rubrique,#ID_RUBRIQUE},id_secteur=#ID_SECTEUR,type-page=citation,composition=#COMPOSITION} />
+	</BOUCLE_principale_zcore>
+
+[(#REM) sinon si le plugin Zcore pas activé, c'est le code de squelette ci-dessous qui est utilisé]
+	<BOUCLE_principale(CITATIONS){id_citation}{si #PLUGIN{zcore}|non}>
+	<!DOCTYPE html>
+	<html dir="#LANG_DIR" lang="#LANG" xmlns="http://www.w3.org/1999/xhtml" xml:lang="#LANG" class="[(#LANG_DIR)][ (#LANG)] no-js">
+	<head>
+		<script type='text/javascript'>/*<![CDATA[*/(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement);/*]]>*/</script>
+		<title>[(#TITRE|couper{80}|textebrut) - ][(#NOM_SITE_SPIP|textebrut)]</title>
+		[<meta name="description" content="(#CITATION{150}|attribut_html)" />]
+		[<link rel="canonical" href="(#URL_CITATION|url_absolue)" />]
+		<INCLURE{fond=inclure/head} />
+	</head>
+
+	<body class="pas_surlignable page_citation">
+	<div class="page">
+
+		<INCLURE{fond=inclure/header} />
+		<INCLURE{fond=inclure/nav,env} />
+		
+		<div class="main">
+			[(#REM) Contenu principal : contenu de l'citation]
+			<div class="wrapper hfeed">
+			<div class="content hentry" id="content">
+		
+				<div class='text-center'style='font-family: "Courier New", Courier, monospace;'>
+					[" <em>(#CITATION)</em> " ]#AUTEUR
+				</div>
+		
+			</div><!--.content-->
+			</div><!--.wrapper-->
+		
+			<div class="aside">
+			
+				<INCLURE{fond=inclure/navsub, id_rubrique} />
+				#FORMULAIRE_RECHERCHE
+				
+			</div><!--.aside-->
+		</div><!--.main-->
+
+		<INCLURE{fond=inclure/footer,self=#SELF} />
+
+	</div><!--.page-->
+	</body>
+	</html>
+	</BOUCLE_principale>
