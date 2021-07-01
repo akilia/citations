@@ -8,7 +8,6 @@
 #SET{activer_rang, #VAL{citations}|in_array{#RANG_LISTE_OBJETS} }
 [(#GET{activer_rang}|oui) [(#VAL{rang}|setenv{par})] #SET{tri,rang} ]
 
-
 <B_liste_citations>
 #ANCRE_PAGINATION
 <div class="liste-objets citations">
@@ -16,18 +15,22 @@
 	[<caption><strong class="caption">(#ENV*{titre,#GRAND_TOTAL|singulier_ou_pluriel{citation:info_1_citation,citation:info_nb_citations}})</strong></caption>]
 	<thead>
 		<tr class="first_row">
-			<th class="statut" scope="col">[(#TRI{statut,<span title="<:lien_trier_statut|attribut_html:>">#</span>,ajax})]</th>
 			[(#GET{activer_rang}|oui) <th class="rang" scope="col">[(#TRI{rang,<span title="<:rang:lien_trier_rang|attribut_html:>"><:rang:info_rang_abbr:></span>,ajax})]</th>]
+			<th class="statut" scope="col">[(#TRI{statut,<span title="<:lien_trier_statut|attribut_html:>">#</span>,ajax})]</th>
+			<th class='titre'>Citation</th>
+			<th class='nologo'></th>
 			<th class="auteur" scope="col">[(#TRI{auteur,<:citation:champ_auteur_label:>,ajax})]</th>
 			<th class="id" scope="col">[(#TRI{id_citation,<:info_numero_abbreviation:>,ajax})]</th>
 		</tr>
 	</thead>
 	<tbody>
-	<BOUCLE_liste_citations(CITATIONS){id_rubrique?}{id_secteur?}{id_mot?}{id_auteur?}{where?}{statut?}{recherche?}{tri #ENV{par,num auteur},#GET{defaut_tri}}{par auteur}{pagination #ENV{nb,10}}>
-		<tr[ (#GET{activer_rang}|oui)data-id_objet="#ID_CITATION"] class="[(#COMPTEUR_BOUCLE|alterner{row_odd,row_even})]">
+	<BOUCLE_liste_citations(CITATIONS){id_?}{where?}{statut?}{recherche?}{tri #ENV{par,num auteur},#GET{defaut_tri}}{par auteur}{pagination #ENV{nb,10}}>
+			<tr[ (#GET{activer_rang}|oui)data-id_objet="#ID_CITATION"] class="[(#COMPTEUR_BOUCLE|alterner{row_odd,row_even})]">
 			<td class="statut">[(#STATUT|puce_statut{citation,#ID_CITATION,#ID_RUBRIQUE})]</td>
 			[(#GET{activer_rang}|oui) <td class="rang">[(#RANG).]</td>]
-			<td class="auteur principale">[(#LOGO_CITATION|image_reduire{20,26})]<a href="[(#ID_CITATION|generer_url_entite{citation})]" title="<:info_numero_abbreviation|attribut_html:> #ID_CITATION">#AUTEUR</a></td>
+			<td class='titre principale'><a href="[(#ID_CITATION|generer_url_entite{citation})]" title="<:info_numero_abbreviation|attribut_html:> #ID_CITATION">[(#CITATION|couper{100})]</a></td>
+			<td class='[(#LOGO_CITATION_NORMAL|?{logo,nologo})]'>[(#LOGO_CITATION_NORMAL|image_recadre_avec_fallback{70,70,focus})]</td>
+			<td class="auteur principale">#AUTEUR</td>
 			<td class="id">[(#AUTORISER{modifier,citation,#ID_CITATION}|?{
 				<a href="[(#URL_ECRIRE{citation_edit,id_citation=#ID_CITATION})]">#ID_CITATION</a>,
 				#ID_CITATION
@@ -36,7 +39,7 @@
 	</BOUCLE_liste_citations>
 	</tbody>
 </table>
-[<p class="pagination">(#PAGINATION{prive})</p>]
+[<nav class='pagination'>(#PAGINATION{#ENV{pagination,prive}})</nav>]
 </div>
 </B_liste_citations>[
 <div class="liste-objets citations caption-wrap"><strong class="caption">(#ENV*{sinon,''})</strong></div>
